@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIS Windows | Certificate Generator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════
+       TOOL SHELL (hidden in print)
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #1a1e2e;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .tool-topbar {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      border-bottom: 1px solid rgba(196,154,46,0.25);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .tool-topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tool-topbar-brand .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c49a2e;
+    }
+    .tool-topbar-brand h1 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.01em;
+    }
+    .tool-topbar-brand span {
+      font-size: 0.72rem;
+      color: rgba(196,154,46,0.85);
+      background: rgba(196,154,46,0.1);
+      border: 1px solid rgba(196,154,46,0.25);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .tool-topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Action buttons */
+    .tb-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.18s ease;
+      letter-spacing: 0.02em;
+    }
+    .tb-btn-print {
+      background: #c49a2e;
+      color: #0a1428;
+    }
+    .tb-btn-print:hover {
+      background: #d9b84a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(196,154,46,0.35);
+    }
+    .tb-btn-pdf {
+      background: rgba(255,255,255,0.07);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .tb-btn-pdf:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .tb-btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    /* Layout */
+    .tool-layout {
+      display: flex;
+      min-height: calc(100vh - 57px);
+    }
+
+    /* ── FORM PANEL ── */
+    .form-panel {
+      width: 320px;
+      flex-shrink: 0;
+      background: #0f172a;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .form-section {
+      margin-bottom: 22px;
+    }
+    .form-section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c49a2e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(196,154,46,0.2);
+    }
+
+    .form-field {
+      margin-bottom: 14px;
+    }
+    .form-field label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      padding: 10px 13px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9px;
+      color: #f1f5f9;
+      font-size: 0.84rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .form-field input::placeholder { color: rgba(255,255,255,0.22); }
+    .form-field input:focus,
+    .form-field select:focus {
+      border-color: rgba(196,154,46,0.55);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(196,154,46,0.1);
+    }
+    .form-field select option { background: #1e293b; }
+
+    .region-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .preview-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(196,154,46,0.1);
+      border: 1px solid rgba(196,154,46,0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 8px;
+    }
+    .preview-badge .preview-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c49a2e;
+      flex-shrink: 0;
+    }
+    .preview-badge span {
+      font-size: 0.75rem;
+      color: #c49a2e;
+      font-weight: 600;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      color: #64748b;
+      padding: 10px 0 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 8px;
+    }
+    .live-indicator .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── CERTIFICATE PREVIEW AREA ── */
+    .preview-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 28px;
+      background: #b0a99a;
+    }
+
+    /* ═══════════════════════════════════════
+       CERTIFICATE STYLES (UNCHANGED)
+    ═══════════════════════════════════════ */
+    :root {
+      --navy: #09182a;
+      --navy2: #122236;
+      --navy3: #1c3550;
+      --gold: #c49a2e;
+      --gold2: #d9b84a;
+      --gold3: #edd98a;
+      --paper: #fefcf6;
+      --ink: #0d1b2a;
+      --muted: #4a5a6a;
+    }
+
+    @page { size: A4; margin: 0; }
+
+    .certificate {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.22);
+      flex-shrink: 0;
+    }
+
+    .certificate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .border-layer { position: absolute; inset: 5mm; border: 3px solid var(--gold); z-index: 2; pointer-events: none; }
+    .border-layer.second { inset: 7.2mm; border: 0.5px solid var(--gold2); }
+    .border-layer.third { inset: 8.5mm; border: 1px solid rgba(196,154,46,0.35); }
+
+    .corner { position: absolute; width: 22mm; height: 22mm; z-index: 4; pointer-events: none; }
+    .corner svg { width: 100%; height: 100%; }
+    .corner.tl { top: 5mm; left: 5mm; }
+    .corner.tr { top: 5mm; right: 5mm; transform: scaleX(-1); }
+    .corner.bl { bottom: 5mm; left: 5mm; transform: scaleY(-1); }
+    .corner.br { bottom: 5mm; right: 5mm; transform: scale(-1); }
+
+    .watermark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1; pointer-events: none; top: 40mm; }
+    .watermark img { width: 120mm; opacity: 0.028; filter: grayscale(100%); transform: rotate(-12deg); }
+
+    .content { position: relative; z-index: 5; display: flex; flex-direction: column; min-height: 297mm; padding-bottom: 6mm; }
+
+    .header-band { background: var(--navy); padding: 8mm 14mm 7mm; position: relative; }
+    .header-band::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 120% at 50% -10%, rgba(196,154,46,0.18) 0%, transparent 65%); }
+    .header-band::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--gold), var(--gold3), var(--gold), transparent); }
+    .header-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .header-logo { height: 32mm; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.93; }
+    .header-rule { width: 60mm; height: 1px; background: linear-gradient(90deg, transparent, var(--gold2), transparent); margin: 4px auto; }
+    .header-org { font-family: 'Cinzel', 'Trajan Pro', Georgia, serif; font-size: 8px; font-weight: 700; letter-spacing: 3.5px; color: var(--gold3); text-align: center; text-transform: uppercase; }
+
+    .ornament-band { background: linear-gradient(180deg, var(--navy) 0%, rgba(9,24,42,0) 100%); height: 6mm; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14mm; }
+    .orn-line { flex: 1; height: 0.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .orn-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+    .orn-diamond.small { width: 4px; height: 4px; background: var(--gold2); }
+
+    .title-section { text-align: center; padding: 5mm 14mm 0; }
+    .cert-eyebrow { font-family: 'Cinzel', serif; font-size: 9px; font-weight: 700; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 3mm; }
+    .cert-main-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(28px, 5vw, 40px); font-weight: 500; color: var(--navy); letter-spacing: 1px; line-height: 1.1; }
+
+    .divider-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 4mm 18mm; }
+    .divider-segment { flex: 1; height: 1px; background: var(--gold); opacity: 0.6; }
+    .divider-diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
+    .divider-diamond.small { width: 4px; height: 4px; background: var(--gold2); }
+    .divider-diamond.xs { width: 2.5px; height: 2.5px; background: var(--gold3); }
+
+    .body-content { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 13mm; }
+    .presented-label { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4mm; }
+    .partner-name { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(42px, 6vw, 65px); font-weight: 650; line-height: 1; letter-spacing: 1.5px; color: var(--navy); margin-bottom: 5mm; text-shadow: 0 1px 0 rgba(255,255,255,0.6), 0 2px 6px rgba(9,24,42,0.12); }
+    .name-underline { width: 80mm; height: 2.5px; background: linear-gradient(90deg, transparent, var(--gold), var(--gold3), var(--gold), transparent); margin: 0 auto 5mm; }
+    .statement-text { font-size: 15px; font-weight: 400; color: #2e3e50; line-height: 1.9; max-width: 155mm; margin: 0 auto 5mm; }
+    .statement-text strong { font-weight: 700; color: var(--navy); }
+
+    .info-grid { display: flex; align-items: stretch; justify-content: center; gap: 0; margin: 3mm auto; border: 1.5px solid var(--gold); width: 100%; max-width: 148mm; }
+    .info-cell { flex: 1; padding: 8px 12px; text-align: center; }
+    .info-cell + .info-cell { border-left: 1px solid rgba(196,154,46,0.5); }
+    .info-label { font-family: 'Cinzel', serif; font-size: 7.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 3px; }
+    .info-value { font-size: 14.5px; font-weight: 700; color: var(--navy); letter-spacing: 0.5px; font-family: 'Cormorant Garamond', serif; }
+
+    .seal-row { display: flex; align-items: center; justify-content: center; gap: 10mm; margin: 6mm auto 0; width: 100%; max-width: 155mm; }
+    .seal-line { flex: 1; height: 0.5px; background: linear-gradient(90deg, transparent, rgba(196,154,46,0.5)); }
+    .seal-line.right { background: linear-gradient(90deg, rgba(196,154,46,0.5), transparent); }
+
+    .seal { width: 32mm; height: 32mm; border-radius: 50%; flex-shrink: 0; position: relative; background: conic-gradient(from 0deg, #a07a18 0deg, #c49a2e 30deg, #edd98a 60deg, #d9b84a 90deg, #c49a2e 120deg, #a07a18 150deg, #c49a2e 180deg, #edd98a 210deg, #d9b84a 240deg, #c49a2e 270deg, #edd98a 300deg, #d9b84a 330deg, #a07a18 360deg); box-shadow: 0 0 0 1.5px rgba(196,154,46,0.9), 0 0 0 3px rgba(196,154,46,0.2), 0 4px 14px rgba(0,0,0,0.18); }
+    .seal-inner { position: absolute; inset: 5px; border-radius: 50%; background: radial-gradient(circle at 34% 28%, rgba(255,255,255,0.9) 0%, rgba(253,248,238,0.96) 40%, rgba(244,232,190,0.90) 100%); border: 0.5px solid rgba(196,154,46,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .seal-brand { font-family: 'Cinzel', serif; font-size: 7px; font-weight: 700; letter-spacing: 2px; color: var(--navy); text-transform: uppercase; }
+    .seal-hr { width: 14mm; height: 0.5px; background: var(--gold); margin: 2px auto; }
+    .seal-year { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--navy); }
+    .seal-tag { font-family: 'Cinzel', serif; font-size: 6px; font-weight: 600; letter-spacing: 1.5px; color: var(--navy2); text-transform: uppercase; }
+
+    .footer-grid { padding: 4mm 13mm 0; border-top: 1px solid rgba(196,154,46,0.4); display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; }
+
+    .signature-area { display: inline-block; width: auto; }
+    .signature-img { height: 15mm; display: flex; align-items: flex-end; margin-bottom: 5px; }
+    .signature-img img { height: 100%; width: auto; object-fit: contain; }
+    .signature-line { width: auto; min-width: 80px; max-width: 140px; height: 1px; background: var(--navy); opacity: 0.35; margin: 4px 0 6px 0; }
+    .signature-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+    .signature-title { font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+
+    .qr-verification { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .qr-container { width: 26mm; height: 26mm; background: white; border: 1.5px solid var(--gold); padding: 2mm; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+    .qr-container img { width: 100%; height: 100%; object-fit: contain; }
+    .qr-label { font-family: 'Cinzel', serif; font-size: 6.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-top: 3px; text-align: center; }
+    .qr-sub { font-size: 7px; color: var(--muted); letter-spacing: 0.5px; text-align: center; }
+
+    .issued-area { text-align: right; }
+    .issued-label { font-family: 'Cinzel', serif; font-size: 7.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+    .issued-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--navy); }
+    .issued-dept { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .cert-id-bar { margin: 4mm 13mm 0; padding: 6px 12px; border: 0.5px solid rgba(196,154,46,0.4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .cert-id-item { text-align: center; }
+    .cert-id-label { font-family: 'Cinzel', serif; font-size: 6px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 2px; }
+    .cert-id-value { font-size: 11px; font-weight: 700; color: var(--navy); }
+    .cert-sep { width: 0.5px; height: 22px; background: rgba(196,154,46,0.4); }
+
+    .base-footer { text-align: center; padding: 4mm 0 4mm 0; margin-top: 3mm; font-family: 'Cinzel', serif; font-size: 7px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(74,90,106,0.65); clear: both; }
+
+    /* ═══════════════════════════════════════
+       PRINT RULES
+    ═══════════════════════════════════════ */
+    @media print {
+      body { background: white !important; padding: 0 !important; margin: 0 !important; display: block !important; }
+      .tool-topbar { display: none !important; }
+      .form-panel { display: none !important; }
+      .tool-layout { display: block !important; }
+      .preview-area { padding: 0 !important; background: white !important; display: block !important; }
+      .certificate { box-shadow: none !important; margin: 0 !important; width: 210mm !important; height: 297mm !important; min-height: 297mm !important; }
+      .content { height: 297mm !important; min-height: unset !important; padding-bottom: 18mm !important; }
+      .base-footer { position: absolute !important; left: 0 !important; right: 0 !important; bottom: 10mm !important; margin: 0 !important; padding: 0 !important; z-index: 6 !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+      .footer-grid { grid-template-columns: 1fr auto 1fr !important; align-items: end !important; }
+      .signature-area { justify-self: start !important; }
+      .qr-verification { justify-self: center !important; }
+      .issued-area { justify-self: end !important; text-align: right !important; }
+      .issued-label, .issued-name, .issued-dept, .qr-label, .qr-sub { white-space: nowrap !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── TOP BAR ── -->
+  <div class="tool-topbar" id="toolTopbar">
+    <div class="tool-topbar-brand">
+      <div class="brand-dot"></div>
+      <h1>AIS Windows Certificate Generator</h1>
+      <span>Live Editor</span>
+    </div>
+    <div class="tool-topbar-actions">
+      <button class="tb-btn tb-btn-pdf" onclick="savePDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+        Save as PDF
+      </button>
+      <button class="tb-btn tb-btn-print" onclick="printCertificate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 6,2 18,2 18,9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Certificate
+      </button>
+    </div>
+  </div>
+
+  <div class="tool-layout">
+
+    <!-- ── FORM PANEL ── -->
+    <aside class="form-panel" id="formPanel">
+
+      <div class="form-section">
+        <div class="form-section-title">Partner Details</div>
+
+        <div class="form-field">
+          <label>Partner Name</label>
+          <input type="text" id="inp_partnerName" placeholder="e.g. AMG Design Solutions" value="AMG Design Solutions">
+        </div>
+
+        <div class="form-field">
+          <label>Validity Period</label>
+          <input type="text" id="inp_validity" placeholder="e.g. Year 2026 – 2027" value="Year 2026 – 2027">
+        </div>
+
+        <div class="form-field">
+          <label>Effective From</label>
+          <input type="text" id="inp_effectiveFrom" placeholder="e.g. April 2026" value="April 2026">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Seal &amp; Certificate</div>
+
+        <div class="form-field">
+          <label>Seal Year (FY Text)</label>
+          <input type="text" id="inp_sealYear" placeholder="e.g. FY27–28" value="FY27–28">
+        </div>
+
+        <div class="form-field">
+          <label>Certificate Number</label>
+          <input type="text" id="inp_certNo" placeholder="e.g. AIS / CP / FY27 / 063" value="AIS / CP / FY27 / 063">
+        </div>
+
+        <div class="form-field">
+          <label>Date of Issue</label>
+          <input type="text" id="inp_dateOfIssue" placeholder="e.g. April 2026" value="April 2026">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Region</div>
+
+        <div class="region-row">
+          <div class="form-field">
+            <label>Zone</label>
+            <select id="inp_zone">
+              <option value="South">South</option>
+              <option value="North">North</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>State</label>
+            <input type="text" id="inp_state" placeholder="e.g. Karnataka" value="Karnataka">
+          </div>
+        </div>
+
+        <div class="preview-badge">
+          <div class="preview-dot"></div>
+          <span id="regionPreview">South Zone — Karnataka</span>
+        </div>
+      </div>
+
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        Certificate updates live as you type
+      </div>
+
+    </aside>
+
+    <!-- ── CERTIFICATE PREVIEW ── -->
+    <div class="preview-area">
+      <div class="certificate" id="certificate">
+        <div class="border-layer" aria-hidden="true"></div>
+        <div class="border-layer second" aria-hidden="true"></div>
+        <div class="border-layer third" aria-hidden="true"></div>
+
+        <div class="corner tl" aria-hidden="true">
+          <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
+            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
+            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
+            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
+            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
+            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="corner tr" aria-hidden="true">
+          <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
+            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
+            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
+            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
+            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
+            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="corner bl" aria-hidden="true">
+          <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
+            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
+            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
+            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
+            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
+            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="corner br" aria-hidden="true">
+          <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
+            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
+            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
+            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
+            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
+            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+          </svg>
+        </div>
+
+        <div class="watermark" aria-hidden="true">
+          <img src="logo.png" alt="AIS Windows watermark">
+        </div>
+
+        <div class="content">
+          <div class="header-band">
+            <div class="header-inner">
+              <img src="logo.png" alt="AIS Windows Logo" class="header-logo">
+              <div class="header-rule"></div>
+              <div class="header-org">AIS WINDOWS &nbsp;|&nbsp; A DIVISION OF ASAHI INDIA GLASS LTD.</div>
+            </div>
+          </div>
+
+          <div class="ornament-band">
+            <div class="orn-line"></div>
+            <div class="orn-diamond small"></div>
+            <div class="orn-diamond"></div>
+            <div class="orn-diamond small"></div>
+            <div class="orn-line"></div>
+          </div>
+
+          <div class="title-section">
+            <div class="cert-eyebrow">Certificate of Authorization</div>
+            <div class="cert-main-title">Authorized Channel Partner</div>
+          </div>
+
+          <div class="divider-row">
+            <div class="divider-segment"></div>
+            <div class="divider-diamond xs"></div>
+            <div class="divider-diamond small"></div>
+            <div class="divider-diamond"></div>
+            <div class="divider-diamond small"></div>
+            <div class="divider-diamond xs"></div>
+            <div class="divider-segment"></div>
+          </div>
+
+          <div class="body-content">
+            <div class="presented-label">This Certificate is Proudly Presented To</div>
+
+            <!-- DYNAMIC: Partner Name (title) -->
+            <div class="partner-name" id="cert_partnerName">AMG Design Solutions</div>
+            <div class="name-underline"></div>
+
+            <!-- DYNAMIC: Statement paragraph -->
+            <p class="statement-text">
+              This is to certify that <strong id="cert_partnerNameStmt">AMG Design Solutions</strong> has been duly appointed as an
+              <strong>Authorized Channel Partner</strong> of <strong>AIS Windows</strong>,
+              entrusted to represent and promote the brand in line with our quality standards and values—marking a significant milestone in our partner network.
+            </p>
+
+            <div class="info-grid">
+              <div class="info-cell">
+                <span class="info-label">Validity Period</span>
+                <!-- DYNAMIC -->
+                <span class="info-value" id="cert_validity">Year 2026 – 2027</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Partner Category</span>
+                <!-- STATIC -->
+                <span class="info-value">Authorized Partner</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Effective From</span>
+                <!-- DYNAMIC -->
+                <span class="info-value" id="cert_effectiveFrom">April 2026</span>
+              </div>
+            </div>
+
+            <div class="seal-row">
+              <div class="seal-line"></div>
+              <div class="seal" aria-hidden="true">
+                <div class="seal-inner">
+                  <div class="seal-brand">AIS Windows</div>
+                  <div class="seal-hr"></div>
+                  <!-- DYNAMIC: Seal Year -->
+                  <div class="seal-year" id="cert_sealYear">FY27–28</div>
+                  <div class="seal-hr"></div>
+                  <div class="seal-tag">Authorized<br>Partner</div>
+                </div>
+              </div>
+              <div class="seal-line right"></div>
+            </div>
+          </div>
+
+          <div class="footer-grid">
+            <div class="signature-area">
+              <div class="signature-img">
+                <img src="signature1.png" alt="Authorised Signature">
+              </div>
+              <div class="signature-line"></div>
+              <div class="signature-name">Naveen Karki</div>
+              <div class="signature-title">Business Head · AIS Windows</div>
+            </div>
+
+            <div class="qr-verification">
+              <div class="qr-container">
+                <img src="whatsapp-qr.png" alt="WhatsApp Verification QR Code">
+              </div>
+              <div class="qr-label">Verify Authenticity</div>
+              <div class="qr-sub">Scan with WhatsApp</div>
+            </div>
+
+            <div class="issued-area">
+              <div class="issued-label">Issued By</div>
+              <div class="issued-name">Sanju G. AIS Windows</div>
+              <div class="issued-dept">Channel Management Division</div>
+            </div>
+          </div>
+
+          <div class="cert-id-bar">
+            <div class="cert-id-item">
+              <span class="cert-id-label">Certificate No.</span>
+              <!-- DYNAMIC -->
+              <span class="cert-id-value" id="cert_certNo">AIS / CP / FY27 / 063</span>
+            </div>
+            <div class="cert-sep"></div>
+            <div class="cert-id-item">
+              <span class="cert-id-label">Date of Issue</span>
+              <!-- DYNAMIC -->
+              <span class="cert-id-value" id="cert_dateOfIssue">April 2026</span>
+            </div>
+            <div class="cert-sep"></div>
+            <div class="cert-id-item">
+              <span class="cert-id-label">Region</span>
+              <!-- DYNAMIC -->
+              <span class="cert-id-value" id="cert_region">South Zone — Karnataka</span>
+            </div>
+            <div class="cert-sep"></div>
+            <div class="cert-id-item">
+              <span class="cert-id-label">Authorized By</span>
+              <span class="cert-id-value">AIS Windows HQ</span>
+            </div>
+          </div>
+
+          <div class="base-footer">
+            AIS Windows · Authorized Channel Partnership Program · Asahi India Glass Limited
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════
+       FIELD BINDINGS
+    ══════════════════════════════════════ */
+    const fields = {
+      partnerName:  { input: 'inp_partnerName',  targets: ['cert_partnerName', 'cert_partnerNameStmt'] },
+      validity:     { input: 'inp_validity',      targets: ['cert_validity']     },
+      effectiveFrom:{ input: 'inp_effectiveFrom', targets: ['cert_effectiveFrom']},
+      sealYear:     { input: 'inp_sealYear',      targets: ['cert_sealYear']     },
+      certNo:       { input: 'inp_certNo',        targets: ['cert_certNo']       },
+      dateOfIssue:  { input: 'inp_dateOfIssue',   targets: ['cert_dateOfIssue']  },
+    };
+
+    function esc(str) {
+      return String(str || '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    /* Compute region string from zone + state */
+    function computeRegion() {
+      const zone  = document.getElementById('inp_zone').value.trim()  || 'South';
+      const state = document.getElementById('inp_state').value.trim() || '';
+      return state ? `${zone} Zone — ${state}` : `${zone} Zone`;
+    }
+
+    /* Master update function */
+    function updateCertificate() {
+      /* Simple text fields */
+      Object.values(fields).forEach(({ input, targets }) => {
+        const val = document.getElementById(input).value.trim();
+        targets.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val || el.textContent;
+        });
+      });
+
+      /* Region composite field */
+      const region = computeRegion();
+      const regionEl = document.getElementById('cert_region');
+      if (regionEl) regionEl.textContent = region;
+
+      /* Live preview badge in form */
+      const previewEl = document.getElementById('regionPreview');
+      if (previewEl) previewEl.textContent = region;
+    }
+
+    /* Bind all simple field inputs */
+    Object.values(fields).forEach(({ input }) => {
+      const el = document.getElementById(input);
+      if (el) el.addEventListener('input', updateCertificate);
+    });
+
+    /* Bind region fields */
+    document.getElementById('inp_zone').addEventListener('change', updateCertificate);
+    document.getElementById('inp_state').addEventListener('input', updateCertificate);
+
+    /* Run on load to sync initial values */
+    updateCertificate();
+
+    /* ══════════════════════════════════════
+       PRINT & PDF
+    ══════════════════════════════════════ */
+    function printCertificate() {
+      window.print();
+    }
+
+    function savePDF() {
+      /* Trigger browser print-to-PDF dialog */
+      const prevTitle = document.title;
+      const partnerName = document.getElementById('inp_partnerName').value.trim() || 'Certificate';
+      document.title = `AIS_Certificate_${partnerName.replace(/\s+/g,'_')}`;
+      window.print();
+      document.title = prevTitle;
+    }
+  </script>
+
+</body>
+</html>
