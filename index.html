@@ -302,7 +302,7 @@
     .header-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; }
     .header-logo { height: 32mm; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.93; }
     .header-rule { width: 60mm; height: 1px; background: linear-gradient(90deg, transparent, var(--gold2), transparent); margin: 4px auto; }
-    .header-org { font-family: 'Cinzel', 'Trajan Pro', Georgia, serif; font-size: 8px; font-weight: 700; letter-spacing: 3.5px; color: var(--gold3); text-align: center; text-transform: uppercase; }
+    .header-org { font-family: 'Cinzel', 'Trajan Pro', Georgia, serif; font-size: 12px; font-weight: 1000; letter-spacing: 3.5px; color: var(--gold3); text-align: center; text-transform: uppercase; }
 
     .ornament-band { background: linear-gradient(180deg, var(--navy) 0%, rgba(9,24,42,0) 100%); height: 6mm; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14mm; }
     .orn-line { flex: 1; height: 0.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
@@ -369,7 +369,7 @@
     .cert-id-value { font-size: 11px; font-weight: 700; color: var(--navy); }
     .cert-sep { width: 0.5px; height: 22px; background: rgba(196,154,46,0.4); }
 
-    .base-footer { text-align: center; padding: 4mm 0 4mm 0; margin-top: 3mm; font-family: 'Cinzel', serif; font-size: 7px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(74,90,106,0.65); clear: both; }
+    .base-footer { text-align: center; padding: 4mm 0 4mm 0; margin-top: 3mm; font-family: 'Cinzel', serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(74,90,106,0.65); clear: both; }
 
     /* ═══════════════════════════════════════
        PRINT RULES
@@ -427,12 +427,12 @@
         </div>
 
         <div class="form-field">
-          <label>Validity Period</label>
+          <label>Effective From</label>
           <input type="text" id="inp_validity" placeholder="e.g. Year 2026 – 2027" value="Year 2026 – 2027">
         </div>
 
         <div class="form-field">
-          <label>Effective From</label>
+          <label>Valid till</label>
           <input type="text" id="inp_effectiveFrom" placeholder="e.g. April 2026" value="April 2026">
         </div>
       </div>
@@ -451,7 +451,7 @@
         </div>
 
         <div class="form-field">
-          <label>Date of Issue</label>
+          <label>Month of Issue</label>
           <input type="text" id="inp_dateOfIssue" placeholder="e.g. April 2026" value="April 2026">
         </div>
       </div>
@@ -592,7 +592,7 @@
 
             <div class="info-grid">
               <div class="info-cell">
-                <span class="info-label">Validity Period</span>
+                <span class="info-label">Effective From</span>
                 <!-- DYNAMIC -->
                 <span class="info-value" id="cert_validity">Year 2026 – 2027</span>
               </div>
@@ -602,7 +602,7 @@
                 <span class="info-value">Authorized Partner</span>
               </div>
               <div class="info-cell">
-                <span class="info-label">Effective From</span>
+                <span class="info-label">Valid till</span>
                 <!-- DYNAMIC -->
                 <span class="info-value" id="cert_effectiveFrom">April 2026</span>
               </div>
@@ -675,7 +675,7 @@
           </div>
 
           <div class="base-footer">
-            AIS Windows · Authorized Channel Partnership Program · Asahi India Glass Limited
+            AIS Windows – A Brand of AIS Consumer Glass Solutions Limited
           </div>
         </div>
       </div>
