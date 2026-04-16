@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- QR library loaded via ESM — guaranteed available before any code runs -->
+
   <style>
     /* ═══════════════════════════════════════
        TOOL SHELL (hidden in print)
@@ -36,83 +38,21 @@
       top: 0;
       z-index: 200;
     }
-    .tool-topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .tool-topbar-brand .brand-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #c49a2e;
-    }
-    .tool-topbar-brand h1 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #f1f5f9;
-      letter-spacing: -0.01em;
-    }
-    .tool-topbar-brand span {
-      font-size: 0.72rem;
-      color: rgba(196,154,46,0.85);
-      background: rgba(196,154,46,0.1);
-      border: 1px solid rgba(196,154,46,0.25);
-      padding: 2px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-    .tool-topbar-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .tool-topbar-brand { display: flex; align-items: center; gap: 12px; }
+    .tool-topbar-brand .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: #c49a2e; }
+    .tool-topbar-brand h1 { font-size: 0.95rem; font-weight: 700; color: #f1f5f9; letter-spacing: -0.01em; }
+    .tool-topbar-brand span { font-size: 0.72rem; color: rgba(196,154,46,0.85); background: rgba(196,154,46,0.1); border: 1px solid rgba(196,154,46,0.25); padding: 2px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.05em; }
+    .tool-topbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* Action buttons */
-    .tb-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.18s ease;
-      letter-spacing: 0.02em;
-    }
-    .tb-btn-print {
-      background: #c49a2e;
-      color: #0a1428;
-    }
-    .tb-btn-print:hover {
-      background: #d9b84a;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(196,154,46,0.35);
-    }
-    .tb-btn-pdf {
-      background: rgba(255,255,255,0.07);
-      color: #e2e8f0;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-    .tb-btn-pdf:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.2);
-    }
-    .tb-btn svg {
-      width: 15px;
-      height: 15px;
-      flex-shrink: 0;
-    }
+    .tb-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer; font-family: inherit; transition: all 0.18s ease; letter-spacing: 0.02em; }
+    .tb-btn-print { background: #c49a2e; color: #0a1428; }
+    .tb-btn-print:hover { background: #d9b84a; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(196,154,46,0.35); }
+    .tb-btn-pdf { background: rgba(255,255,255,0.07); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.12); }
+    .tb-btn-pdf:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); }
+    .tb-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 
     /* Layout */
-    .tool-layout {
-      display: flex;
-      min-height: calc(100vh - 57px);
-    }
+    .tool-layout { display: flex; min-height: calc(100vh - 57px); }
 
     /* ── FORM PANEL ── */
     .form-panel {
@@ -127,107 +67,53 @@
       gap: 0;
     }
 
-    .form-section {
-      margin-bottom: 22px;
-    }
-    .form-section-title {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #c49a2e;
-      margin-bottom: 12px;
+    .form-section { margin-bottom: 22px; }
+    .form-section-title { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #c49a2e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .form-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(196,154,46,0.2); }
+
+    .form-field { margin-bottom: 14px; }
+    .form-field label { display: block; font-size: 0.7rem; font-weight: 600; color: #94a3b8; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+    .form-field input,
+    .form-field select { width: 100%; padding: 10px 13px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; color: #f1f5f9; font-size: 0.84rem; font-family: inherit; outline: none; transition: border-color 0.18s, background 0.18s; }
+    .form-field input::placeholder { color: rgba(255,255,255,0.22); }
+    .form-field input:focus,
+    .form-field select:focus { border-color: rgba(196,154,46,0.55); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(196,154,46,0.1); }
+    .form-field select option { background: #1e293b; }
+
+    .region-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .preview-badge { display: flex; align-items: center; gap: 7px; background: rgba(196,154,46,0.1); border: 1px solid rgba(196,154,46,0.2); border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
+    .preview-badge .preview-dot { width: 6px; height: 6px; border-radius: 50%; background: #c49a2e; flex-shrink: 0; }
+    .preview-badge span { font-size: 0.75rem; color: #c49a2e; font-weight: 600; }
+
+    /* QR status indicator in sidebar */
+    .qr-status {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-    .form-section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(196,154,46,0.2);
-    }
-
-    .form-field {
-      margin-bottom: 14px;
-    }
-    .form-field label {
-      display: block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #94a3b8;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .form-field input,
-    .form-field select {
-      width: 100%;
-      padding: 10px 13px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 9px;
-      color: #f1f5f9;
-      font-size: 0.84rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.18s, background 0.18s;
-    }
-    .form-field input::placeholder { color: rgba(255,255,255,0.22); }
-    .form-field input:focus,
-    .form-field select:focus {
-      border-color: rgba(196,154,46,0.55);
-      background: rgba(255,255,255,0.08);
-      box-shadow: 0 0 0 3px rgba(196,154,46,0.1);
-    }
-    .form-field select option { background: #1e293b; }
-
-    .region-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .preview-badge {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(196,154,46,0.1);
-      border: 1px solid rgba(196,154,46,0.2);
-      border-radius: 8px;
+      margin-top: 10px;
       padding: 8px 12px;
-      margin-top: 8px;
-    }
-    .preview-badge .preview-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #c49a2e;
-      flex-shrink: 0;
-    }
-    .preview-badge span {
-      font-size: 0.75rem;
-      color: #c49a2e;
-      font-weight: 600;
-    }
-
-    .live-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.68rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      font-size: 0.7rem;
       color: #64748b;
-      padding: 10px 0 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      margin-top: 8px;
     }
-    .live-indicator .live-dot {
+    .qr-status-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #22c55e;
-      animation: pulse 1.5s infinite;
+      background: #64748b;
+      flex-shrink: 0;
+      transition: background 0.3s;
     }
+    .qr-status-dot.ready { background: #22c55e; }
+    .qr-status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
+    .qr-status-dot.error { background: #ef4444; }
+
+    .live-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; color: #64748b; padding: 10px 0 0; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 8px; }
+    .live-indicator .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 1.5s infinite; }
+
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
@@ -245,7 +131,7 @@
     }
 
     /* ═══════════════════════════════════════
-       CERTIFICATE STYLES (UNCHANGED)
+       CERTIFICATE STYLES
     ═══════════════════════════════════════ */
     :root {
       --navy: #09182a;
@@ -261,24 +147,9 @@
 
     @page { size: A4; margin: 0; }
 
-    .certificate {
-      width: 210mm;
-      min-height: 297mm;
-      background: var(--paper);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 30px 50px rgba(0,0,0,0.22);
-      flex-shrink: 0;
-    }
+    .certificate { width: 210mm; min-height: 297mm; background: var(--paper); position: relative; overflow: hidden; box-shadow: 0 30px 50px rgba(0,0,0,0.22); flex-shrink: 0; }
 
-    .certificate::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-    }
+    .certificate::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
 
     .border-layer { position: absolute; inset: 5mm; border: 3px solid var(--gold); z-index: 2; pointer-events: none; }
     .border-layer.second { inset: 7.2mm; border: 0.5px solid var(--gold2); }
@@ -352,20 +223,54 @@
     .signature-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--navy); white-space: nowrap; }
     .signature-title { font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; white-space: nowrap; }
 
+    /* ── QR Container (layout unchanged, content is now dynamic) ── */
     .qr-verification { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .qr-container { width: 26mm; height: 26mm; background: white; border: 1.5px solid var(--gold); padding: 2mm; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
-    .qr-container img { width: 100%; height: 100%; object-fit: contain; }
-    .qr-label { font-family: 'Cinzel', serif; font-size: 6.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-top: 3px; text-align: center; }
-    .qr-sub { font-size: 7px; color: var(--muted); letter-spacing: 0.5px; text-align: center; }
+    .qr-container {
+      width: 26mm;
+      height: 26mm;
+      background: white;
+      border: 1.5px solid var(--gold);
+      padding: 2mm;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* The dynamically generated QR image fills the container exactly */
+    #qr-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      image-rendering: pixelated; /* keeps QR crisp at small sizes */
+    }
+
+    /* Subtle loading state on the container */
+    .qr-container.qr-loading {
+      background: repeating-linear-gradient(
+        -45deg,
+        #fefcf6,
+        #fefcf6 4px,
+        #f5eedc 4px,
+        #f5eedc 8px
+      );
+    }
+
+    .qr-label { font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 900; margin-top: 3px; text-align: center; }
+    .qr-sub { font-size: 7.5px; font-weight: 800; color: var(--muted); letter-spacing: 0.7px; text-align: center; }
 
     .issued-area { text-align: right; }
-    .issued-label { font-family: 'Cinzel', serif; font-size: 7.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+    .issued-label { font-family: 'Cinzel', serif; font-size: 7.5px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
     .issued-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--navy); }
     .issued-dept { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
     .cert-id-bar { margin: 4mm 13mm 0; padding: 6px 12px; border: 0.5px solid rgba(196,154,46,0.4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
     .cert-id-item { text-align: center; }
-    .cert-id-label { font-family: 'Cinzel', serif; font-size: 6px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 2px; }
+    .cert-id-label { font-family: 'Cinzel', serif; font-size: 7.5px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 2px; }
     .cert-id-value { font-size: 11px; font-weight: 700; color: var(--navy); }
     .cert-sep { width: 0.5px; height: 22px; background: rgba(196,154,46,0.4); }
 
@@ -388,6 +293,10 @@
       .qr-verification { justify-self: center !important; }
       .issued-area { justify-self: end !important; text-align: right !important; }
       .issued-label, .issued-name, .issued-dept, .qr-label, .qr-sub { white-space: nowrap !important; }
+
+      /* QR image prints cleanly as an embedded data URL — no network request needed */
+      .qr-container { background: white !important; box-shadow: none !important; }
+      .qr-container.qr-loading { background: white !important; }
     }
   </style>
 </head>
@@ -481,9 +390,20 @@
         </div>
       </div>
 
+      <div class="form-section">
+        <div class="form-section-title">QR Code</div>
+        <div class="qr-status">
+          <div class="qr-status-dot" id="qrStatusDot"></div>
+          <span id="qrStatusText">Initialising…</span>
+        </div>
+        <div style="margin-top:8px;font-size:0.65rem;color:#475569;line-height:1.5;padding:8px;background:rgba(255,255,255,0.03);border-radius:6px;border:1px solid rgba(255,255,255,0.05);">
+          Auto-generated WhatsApp verification link for <strong style="color:#c49a2e">919599949991</strong>. Updates instantly when partner name changes.
+        </div>
+      </div>
+
       <div class="live-indicator">
         <div class="live-dot"></div>
-        Certificate updates live as you type
+        Certificate &amp; QR update live as you type
       </div>
 
     </aside>
@@ -579,11 +499,9 @@
           <div class="body-content">
             <div class="presented-label">This Certificate is Proudly Presented To</div>
 
-            <!-- DYNAMIC: Partner Name (title) -->
             <div class="partner-name" id="cert_partnerName">AMG Design Solutions</div>
             <div class="name-underline"></div>
 
-            <!-- DYNAMIC: Statement paragraph -->
             <p class="statement-text">
               This is to certify that <strong id="cert_partnerNameStmt">AMG Design Solutions</strong> has been duly appointed as an
               <strong>Authorized Channel Partner</strong> of <strong>AIS Windows</strong>,
@@ -593,17 +511,14 @@
             <div class="info-grid">
               <div class="info-cell">
                 <span class="info-label">Effective From</span>
-                <!-- DYNAMIC -->
                 <span class="info-value" id="cert_validity">Year 2026 – 2027</span>
               </div>
               <div class="info-cell">
                 <span class="info-label">Partner Category</span>
-                <!-- STATIC -->
                 <span class="info-value">Authorized Partner</span>
               </div>
               <div class="info-cell">
                 <span class="info-label">Valid till</span>
-                <!-- DYNAMIC -->
                 <span class="info-value" id="cert_effectiveFrom">April 2026</span>
               </div>
             </div>
@@ -614,7 +529,6 @@
                 <div class="seal-inner">
                   <div class="seal-brand">AIS Windows</div>
                   <div class="seal-hr"></div>
-                  <!-- DYNAMIC: Seal Year -->
                   <div class="seal-year" id="cert_sealYear">FY27–28</div>
                   <div class="seal-hr"></div>
                   <div class="seal-tag">Authorized<br>Partner</div>
@@ -634,9 +548,15 @@
               <div class="signature-title">Business Head · AIS Windows</div>
             </div>
 
+            <!-- QR verification: image is now a dynamically generated data URL -->
             <div class="qr-verification">
-              <div class="qr-container">
-                <img src="whatsapp-qr.png" alt="WhatsApp Verification QR Code">
+              <div class="qr-container qr-loading" id="qrContainer" aria-label="WhatsApp verification QR code">
+                <!--
+                  #qr-img src is set entirely by JavaScript using QRCode.toDataURL().
+                  The result is a self-contained base64 PNG — no external request
+                  is ever made at print/PDF time, so it renders perfectly offline.
+                -->
+                <img id="qr-img" alt="WhatsApp Verification QR Code">
               </div>
               <div class="qr-label">Verify Authenticity</div>
               <div class="qr-sub">Scan with WhatsApp</div>
@@ -644,27 +564,24 @@
 
             <div class="issued-area">
               <div class="issued-label">Issued By</div>
-              <div class="issued-name">Sanju G. AIS Windows</div>
-              <div class="issued-dept">Channel Management Division</div>
+              <div class="issued-name">Sanju G </div>
+              <div class="issued-dept">AIS Windows Channel Division</div>
             </div>
           </div>
 
           <div class="cert-id-bar">
             <div class="cert-id-item">
               <span class="cert-id-label">Certificate No.</span>
-              <!-- DYNAMIC -->
               <span class="cert-id-value" id="cert_certNo">AIS / CP / FY27 / 063</span>
             </div>
             <div class="cert-sep"></div>
             <div class="cert-id-item">
               <span class="cert-id-label">Date of Issue</span>
-              <!-- DYNAMIC -->
               <span class="cert-id-value" id="cert_dateOfIssue">April 2026</span>
             </div>
             <div class="cert-sep"></div>
             <div class="cert-id-item">
               <span class="cert-id-label">Region</span>
-              <!-- DYNAMIC -->
               <span class="cert-id-value" id="cert_region">South Zone — Karnataka</span>
             </div>
             <div class="cert-sep"></div>
@@ -683,84 +600,168 @@
 
   </div>
 
-  <script>
-    /* ══════════════════════════════════════
+  <script type="module">
+    /* ══════════════════════════════════════════════════════════════
+       QR MODULE
+       Import via esm.sh — ESM guarantees QRCode is fully available
+       before any line below this import executes.
+    ══════════════════════════════════════════════════════════════ */
+    import QRCode from 'https://esm.sh/qrcode@1.5.3';
+
+    /* Configuration */
+    const QR_PHONE   = '919599949991';          // without + prefix for wa.me
+    const QR_SIZE_PX = 400;                      // internal resolution — renders sharp at 26mm
+
+    let _qrDebounceTimer = null;
+
+    /**
+     * Builds the fully encoded WhatsApp URL.
+     * @param {string} partnerName  Raw (unescaped) partner name.
+     * @returns {string}            wa.me URL with percent-encoded message.
+     */
+    function buildWhatsAppURL(partnerName) {
+      const name    = (partnerName || 'this showroom').trim();
+      const message = `I'm at the showroom ${name} and I want to authenticate if it's a genuine partner.`;
+      return `https://wa.me/${QR_PHONE}?text=${encodeURIComponent(message)}`;
+    }
+
+    /**
+     * Regenerates the QR code image.
+     * Called on every partner-name change (debounced 300 ms so we
+     * don't hammer the library while the user is mid-typing).
+     *
+     * @param {string} partnerName  Current value from the input field.
+     */
+    function refreshQR(partnerName) {
+      clearTimeout(_qrDebounceTimer);
+      _qrDebounceTimer = setTimeout(() => _doRefreshQR(partnerName), 300);
+    }
+
+    function _doRefreshQR(partnerName) {
+      const url       = buildWhatsAppURL(partnerName);
+      const img       = document.getElementById('qr-img');
+      const container = document.getElementById('qrContainer');
+      const dot       = document.getElementById('qrStatusDot');
+      const statusTxt = document.getElementById('qrStatusText');
+
+      // Show loading state
+      container.classList.add('qr-loading');
+      dot.className = 'qr-status-dot loading';
+      statusTxt.textContent = 'Generating…';
+
+      QRCode.toDataURL(url, {
+        width:          QR_SIZE_PX,
+        margin:         1,            // quiet-zone: 1 module = cleaner look inside the gold border
+        errorCorrectionLevel: 'H',   // highest reliability for printed/photographed QR
+        color: {
+          dark:  '#000000',           // standard black modules
+          light: '#ffffff',           // white background
+        },
+      })
+      .then(dataUrl => {
+        img.src    = dataUrl;
+        container.classList.remove('qr-loading');
+        dot.className   = 'qr-status-dot ready';
+        statusTxt.textContent = 'QR ready — partner-specific';
+      })
+      .catch(err => {
+        console.error('[QR] generation failed:', err);
+        container.classList.remove('qr-loading');
+        dot.className   = 'qr-status-dot error';
+        statusTxt.textContent = 'QR generation failed';
+      });
+    }
+
+    /* ══════════════════════════════════════════════════════════════
        FIELD BINDINGS
-    ══════════════════════════════════════ */
+    ══════════════════════════════════════════════════════════════ */
     const fields = {
-      partnerName:  { input: 'inp_partnerName',  targets: ['cert_partnerName', 'cert_partnerNameStmt'] },
-      validity:     { input: 'inp_validity',      targets: ['cert_validity']     },
-      effectiveFrom:{ input: 'inp_effectiveFrom', targets: ['cert_effectiveFrom']},
-      sealYear:     { input: 'inp_sealYear',      targets: ['cert_sealYear']     },
-      certNo:       { input: 'inp_certNo',        targets: ['cert_certNo']       },
-      dateOfIssue:  { input: 'inp_dateOfIssue',   targets: ['cert_dateOfIssue']  },
+      partnerName:   { input: 'inp_partnerName',  targets: ['cert_partnerName', 'cert_partnerNameStmt'] },
+      validity:      { input: 'inp_validity',      targets: ['cert_validity']      },
+      effectiveFrom: { input: 'inp_effectiveFrom', targets: ['cert_effectiveFrom'] },
+      sealYear:      { input: 'inp_sealYear',      targets: ['cert_sealYear']      },
+      certNo:        { input: 'inp_certNo',        targets: ['cert_certNo']        },
+      dateOfIssue:   { input: 'inp_dateOfIssue',   targets: ['cert_dateOfIssue']   },
     };
 
     function esc(str) {
       return String(str || '')
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#39;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
-    /* Compute region string from zone + state */
     function computeRegion() {
       const zone  = document.getElementById('inp_zone').value.trim()  || 'South';
       const state = document.getElementById('inp_state').value.trim() || '';
       return state ? `${zone} Zone — ${state}` : `${zone} Zone`;
     }
 
-    /* Master update function */
+    /**
+     * Master update — syncs all certificate text fields AND
+     * regenerates the QR whenever any input changes.
+     */
     function updateCertificate() {
-      /* Simple text fields */
+      // Sync plain text fields
       Object.values(fields).forEach(({ input, targets }) => {
         const val = document.getElementById(input).value.trim();
         targets.forEach(id => {
           const el = document.getElementById(id);
-          if (el) el.textContent = val || el.textContent;
+          if (el && val) el.textContent = val;
         });
       });
 
-      /* Region composite field */
-      const region = computeRegion();
-      const regionEl = document.getElementById('cert_region');
-      if (regionEl) regionEl.textContent = region;
-
-      /* Live preview badge in form */
+      // Sync region
+      const region    = computeRegion();
+      const regionEl  = document.getElementById('cert_region');
       const previewEl = document.getElementById('regionPreview');
+      if (regionEl)  regionEl.textContent  = region;
       if (previewEl) previewEl.textContent = region;
+
+      // ── Regenerate QR with current partner name ──────────────
+      const partnerName = document.getElementById('inp_partnerName').value.trim();
+      refreshQR(partnerName);
     }
 
-    /* Bind all simple field inputs */
+    // Bind all text inputs
     Object.values(fields).forEach(({ input }) => {
       const el = document.getElementById(input);
       if (el) el.addEventListener('input', updateCertificate);
     });
 
-    /* Bind region fields */
+    // Bind region fields
     document.getElementById('inp_zone').addEventListener('change', updateCertificate);
     document.getElementById('inp_state').addEventListener('input', updateCertificate);
 
-    /* Run on load to sync initial values */
+    // Initial render — sync fields AND generate first QR immediately
     updateCertificate();
 
-    /* ══════════════════════════════════════
+    /* ══════════════════════════════════════════════════════════════
        PRINT & PDF
-    ══════════════════════════════════════ */
+       ─────────────────────────────────────────────────────────────
+       Because #qr-img.src is a base64 data URL (not an external
+       URL), the browser includes it verbatim in the print output.
+       No network request is made at print time, so the QR is
+       always visible even in offline / strict corporate environments.
+    ══════════════════════════════════════════════════════════════ */
     function printCertificate() {
       window.print();
     }
 
     function savePDF() {
-      /* Trigger browser print-to-PDF dialog */
-      const prevTitle = document.title;
+      const prevTitle   = document.title;
       const partnerName = document.getElementById('inp_partnerName').value.trim() || 'Certificate';
-      document.title = `AIS_Certificate_${partnerName.replace(/\s+/g,'_')}`;
+      document.title    = `AIS_Certificate_${partnerName.replace(/\s+/g, '_')}`;
       window.print();
-      document.title = prevTitle;
+      document.title    = prevTitle;
     }
+
+    /* ES modules are scoped — functions are NOT global by default.
+       Assign explicitly so the HTML onclick= attributes can call them. */
+    window.printCertificate = printCertificate;
+    window.savePDF          = savePDF;
   </script>
 
 </body>
