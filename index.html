@@ -151,6 +151,8 @@
 
     .certificate::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
 
+    .certificate::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='48'%20height='14'%3E%3Cg%20fill='none'%20stroke='%23c49a2e'%20stroke-width='0.6'%3E%3Cpath%20d='M0%207%20Q12%202%2024%207%20Q36%2012%2048%207'/%3E%3Cpath%20d='M0%207%20Q12%2012%2024%207%20Q36%202%2048%207'/%3E%3C/g%3E%3C/svg%3E"); background-size: 22mm; opacity: 0.06; pointer-events: none; z-index: 1; }
+
     .border-layer { position: absolute; inset: 5mm; border: 3px solid var(--gold); z-index: 2; pointer-events: none; }
     .border-layer.second { inset: 7.2mm; border: 0.5px solid var(--gold2); }
     .border-layer.third { inset: 8.5mm; border: 1px solid rgba(196,154,46,0.35); }
@@ -207,12 +209,13 @@
     .seal-line { flex: 1; height: 0.5px; background: linear-gradient(90deg, transparent, rgba(196,154,46,0.5)); }
     .seal-line.right { background: linear-gradient(90deg, rgba(196,154,46,0.5), transparent); }
 
-    .seal { width: 32mm; height: 32mm; border-radius: 50%; flex-shrink: 0; position: relative; background: conic-gradient(from 0deg, #a07a18 0deg, #c49a2e 30deg, #edd98a 60deg, #d9b84a 90deg, #c49a2e 120deg, #a07a18 150deg, #c49a2e 180deg, #edd98a 210deg, #d9b84a 240deg, #c49a2e 270deg, #edd98a 300deg, #d9b84a 330deg, #a07a18 360deg); box-shadow: 0 0 0 1.5px rgba(196,154,46,0.9), 0 0 0 3px rgba(196,154,46,0.2), 0 4px 14px rgba(0,0,0,0.18); }
-    .seal-inner { position: absolute; inset: 5px; border-radius: 50%; background: radial-gradient(circle at 34% 28%, rgba(255,255,255,0.9) 0%, rgba(253,248,238,0.96) 40%, rgba(244,232,190,0.90) 100%); border: 0.5px solid rgba(196,154,46,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    .seal-brand { font-family: 'Cinzel', serif; font-size: 7px; font-weight: 700; letter-spacing: 2px; color: var(--navy); text-transform: uppercase; }
-    .seal-hr { width: 14mm; height: 0.5px; background: var(--gold); margin: 2px auto; }
-    .seal-year { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--navy); }
-    .seal-tag { font-family: 'Cinzel', serif; font-size: 6px; font-weight: 600; letter-spacing: 1.5px; color: var(--navy2); text-transform: uppercase; }
+    .seal { width: 33mm; height: 33mm; border-radius: 50%; flex-shrink: 0; position: relative; box-shadow: 0 0 0 1px rgba(196,154,46,0.55), 0 5px 16px rgba(0,0,0,0.22), 0 1px 2px rgba(0,0,0,0.15); }
+    .seal-medallion { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border-radius: 50%; }
+    .seal-inner { position: absolute; top: 50%; left: 50%; width: 55%; height: 55%; transform: translate(-50%, -50%); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1mm; }
+    .seal-brand { font-family: 'Cinzel', serif; font-size: 6.3px; font-weight: 700; letter-spacing: 1.6px; color: var(--navy); text-transform: uppercase; line-height: 1; }
+    .seal-hr { width: 8.5mm; height: 0.5px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 1.4mm auto; }
+    .seal-year { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1; }
+    .seal-tag { font-family: 'Cinzel', serif; font-size: 5.4px; font-weight: 600; letter-spacing: 1.2px; color: var(--navy2); text-transform: uppercase; line-height: 1.15; }
 
     .footer-grid { padding: 4mm 13mm 0; border-top: 1px solid rgba(196,154,46,0.4); display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; }
 
@@ -392,13 +395,27 @@
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">QR Code</div>
+        <div class="form-section-title">Verification QR</div>
+
+        <div class="form-field">
+          <label>QR Links To</label>
+          <select id="inp_qrMode">
+            <option value="web">Company Website / Location</option>
+            <option value="whatsapp">WhatsApp — Company Official</option>
+          </select>
+        </div>
+
+        <div class="form-field" id="urlField">
+          <label>Verification URL</label>
+          <input type="url" id="inp_verifyUrl" placeholder="https://www.aiswindows.com/…  or a Google Maps link" value="https://www.aiswindows.com/">
+        </div>
+
         <div class="qr-status">
           <div class="qr-status-dot" id="qrStatusDot"></div>
           <span id="qrStatusText">Initialising…</span>
         </div>
-        <div style="margin-top:8px;font-size:0.65rem;color:#475569;line-height:1.5;padding:8px;background:rgba(255,255,255,0.03);border-radius:6px;border:1px solid rgba(255,255,255,0.05);">
-          Auto-generated WhatsApp verification link for <strong style="color:#c49a2e">919599949991</strong>. Updates instantly when partner name changes.
+        <div id="qrHint" style="margin-top:8px;font-size:0.65rem;color:#475569;line-height:1.5;padding:8px;background:rgba(255,255,255,0.03);border-radius:6px;border:1px solid rgba(255,255,255,0.05);">
+          Paste the partner&#39;s live page on <strong style="color:#c49a2e">aiswindows.com</strong> (or a Google&nbsp;Maps location link). The QR regenerates instantly each time the URL changes.
         </div>
       </div>
 
@@ -418,46 +435,70 @@
 
         <div class="corner tl" aria-hidden="true">
           <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
-            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
-            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
-            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
-            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
-            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
-            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+            <path d="M3 3 L81 3" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M3 3 L3 81" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M7.5 7.5 L60 7.5" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M7.5 7.5 L7.5 60" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M14 7.5 C 34 7.5, 30 30, 50 30" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M7.5 14 C 7.5 34, 30 30, 30 50" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M50 30 q 6 -3 9 2 q -6 3 -9 -2 z" fill="#c49a2e" opacity="0.85"/>
+            <path d="M30 50 q -3 6 2 9 q 3 -6 -2 -9 z" fill="#c49a2e" opacity="0.85"/>
+            <rect x="5.5" y="5.5" width="7" height="7" fill="#c49a2e" transform="rotate(45 9 9)"/>
+            <circle cx="9" cy="9" r="2.3" fill="#fbf3dd"/>
+            <circle cx="22" cy="10" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="22" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <rect x="40" y="40" width="5" height="5" fill="#edd98a" transform="rotate(45 42.5 42.5)" opacity="0.85"/>
           </svg>
         </div>
         <div class="corner tr" aria-hidden="true">
           <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
-            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
-            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
-            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
-            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
-            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
-            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+            <path d="M3 3 L81 3" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M3 3 L3 81" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M7.5 7.5 L60 7.5" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M7.5 7.5 L7.5 60" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M14 7.5 C 34 7.5, 30 30, 50 30" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M7.5 14 C 7.5 34, 30 30, 30 50" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M50 30 q 6 -3 9 2 q -6 3 -9 -2 z" fill="#c49a2e" opacity="0.85"/>
+            <path d="M30 50 q -3 6 2 9 q 3 -6 -2 -9 z" fill="#c49a2e" opacity="0.85"/>
+            <rect x="5.5" y="5.5" width="7" height="7" fill="#c49a2e" transform="rotate(45 9 9)"/>
+            <circle cx="9" cy="9" r="2.3" fill="#fbf3dd"/>
+            <circle cx="22" cy="10" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="22" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <rect x="40" y="40" width="5" height="5" fill="#edd98a" transform="rotate(45 42.5 42.5)" opacity="0.85"/>
           </svg>
         </div>
         <div class="corner bl" aria-hidden="true">
           <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
-            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
-            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
-            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
-            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
-            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
-            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+            <path d="M3 3 L81 3" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M3 3 L3 81" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M7.5 7.5 L60 7.5" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M7.5 7.5 L7.5 60" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M14 7.5 C 34 7.5, 30 30, 50 30" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M7.5 14 C 7.5 34, 30 30, 30 50" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M50 30 q 6 -3 9 2 q -6 3 -9 -2 z" fill="#c49a2e" opacity="0.85"/>
+            <path d="M30 50 q -3 6 2 9 q 3 -6 -2 -9 z" fill="#c49a2e" opacity="0.85"/>
+            <rect x="5.5" y="5.5" width="7" height="7" fill="#c49a2e" transform="rotate(45 9 9)"/>
+            <circle cx="9" cy="9" r="2.3" fill="#fbf3dd"/>
+            <circle cx="22" cy="10" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="22" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <rect x="40" y="40" width="5" height="5" fill="#edd98a" transform="rotate(45 42.5 42.5)" opacity="0.85"/>
           </svg>
         </div>
         <div class="corner br" aria-hidden="true">
           <svg viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2 L82 2" stroke="#c49a2e" stroke-width="3"/>
-            <path d="M2 2 L2 82" stroke="#c49a2e" stroke-width="3"/>
-            <rect x="5" y="5" width="6" height="6" fill="#c49a2e" transform="rotate(45 8 8)"/>
-            <circle cx="10" cy="10" r="3" fill="#c49a2e"/>
-            <circle cx="24" cy="10" r="2" fill="#c49a2e" opacity="0.6"/>
-            <circle cx="10" cy="24" r="2" fill="#c49a2e" opacity="0.6"/>
-            <rect x="31.5" y="31.5" width="5" height="5" fill="#edd98a" transform="rotate(45 34 34)" opacity="0.8"/>
+            <path d="M3 3 L81 3" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M3 3 L3 81" stroke="#c49a2e" stroke-width="2.6"/>
+            <path d="M7.5 7.5 L60 7.5" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M7.5 7.5 L7.5 60" stroke="#c49a2e" stroke-width="0.7"/>
+            <path d="M14 7.5 C 34 7.5, 30 30, 50 30" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M7.5 14 C 7.5 34, 30 30, 30 50" stroke="#c49a2e" stroke-width="1.1"/>
+            <path d="M50 30 q 6 -3 9 2 q -6 3 -9 -2 z" fill="#c49a2e" opacity="0.85"/>
+            <path d="M30 50 q -3 6 2 9 q 3 -6 -2 -9 z" fill="#c49a2e" opacity="0.85"/>
+            <rect x="5.5" y="5.5" width="7" height="7" fill="#c49a2e" transform="rotate(45 9 9)"/>
+            <circle cx="9" cy="9" r="2.3" fill="#fbf3dd"/>
+            <circle cx="22" cy="10" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <circle cx="10" cy="22" r="1.5" fill="#c49a2e" opacity="0.6"/>
+            <rect x="40" y="40" width="5" height="5" fill="#edd98a" transform="rotate(45 42.5 42.5)" opacity="0.85"/>
           </svg>
         </div>
 
@@ -527,12 +568,13 @@
             <div class="seal-row">
               <div class="seal-line"></div>
               <div class="seal" aria-hidden="true">
+                <svg class="seal-medallion" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="aisMedallion" cx="38%" cy="32%" r="78%"><stop offset="0%" stop-color="#f8edc4"/><stop offset="30%" stop-color="#e7c95f"/><stop offset="60%" stop-color="#c49a2e"/><stop offset="100%" stop-color="#9c7619"/></radialGradient><radialGradient id="aisInnerDisc" cx="36%" cy="30%" r="82%"><stop offset="0%" stop-color="#fffdf7"/><stop offset="58%" stop-color="#fbf3dd"/><stop offset="100%" stop-color="#efe0b3"/></radialGradient><linearGradient id="aisSheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/><stop offset="42%" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs><circle cx="120" cy="120" r="116" fill="url(#aisMedallion)"/><g fill="#86640f"><circle cx="230.0" cy="120.0" r="1.9"/><circle cx="229.6" cy="129.1" r="1.9"/><circle cx="228.5" cy="138.1" r="1.9"/><circle cx="226.6" cy="147.0" r="1.9"/><circle cx="224.0" cy="155.7" r="1.9"/><circle cx="220.7" cy="164.2" r="1.9"/><circle cx="216.7" cy="172.4" r="1.9"/><circle cx="212.1" cy="180.2" r="1.9"/><circle cx="206.8" cy="187.6" r="1.9"/><circle cx="200.9" cy="194.5" r="1.9"/><circle cx="194.5" cy="200.9" r="1.9"/><circle cx="187.6" cy="206.8" r="1.9"/><circle cx="180.2" cy="212.1" r="1.9"/><circle cx="172.4" cy="216.7" r="1.9"/><circle cx="164.2" cy="220.7" r="1.9"/><circle cx="155.7" cy="224.0" r="1.9"/><circle cx="147.0" cy="226.6" r="1.9"/><circle cx="138.1" cy="228.5" r="1.9"/><circle cx="129.1" cy="229.6" r="1.9"/><circle cx="120.0" cy="230.0" r="1.9"/><circle cx="110.9" cy="229.6" r="1.9"/><circle cx="101.9" cy="228.5" r="1.9"/><circle cx="93.0" cy="226.6" r="1.9"/><circle cx="84.3" cy="224.0" r="1.9"/><circle cx="75.8" cy="220.7" r="1.9"/><circle cx="67.6" cy="216.7" r="1.9"/><circle cx="59.8" cy="212.1" r="1.9"/><circle cx="52.4" cy="206.8" r="1.9"/><circle cx="45.5" cy="200.9" r="1.9"/><circle cx="39.1" cy="194.5" r="1.9"/><circle cx="33.2" cy="187.6" r="1.9"/><circle cx="27.9" cy="180.2" r="1.9"/><circle cx="23.3" cy="172.4" r="1.9"/><circle cx="19.3" cy="164.2" r="1.9"/><circle cx="16.0" cy="155.7" r="1.9"/><circle cx="13.4" cy="147.0" r="1.9"/><circle cx="11.5" cy="138.1" r="1.9"/><circle cx="10.4" cy="129.1" r="1.9"/><circle cx="10.0" cy="120.0" r="1.9"/><circle cx="10.4" cy="110.9" r="1.9"/><circle cx="11.5" cy="101.9" r="1.9"/><circle cx="13.4" cy="93.0" r="1.9"/><circle cx="16.0" cy="84.3" r="1.9"/><circle cx="19.3" cy="75.8" r="1.9"/><circle cx="23.3" cy="67.6" r="1.9"/><circle cx="27.9" cy="59.8" r="1.9"/><circle cx="33.2" cy="52.4" r="1.9"/><circle cx="39.1" cy="45.5" r="1.9"/><circle cx="45.5" cy="39.1" r="1.9"/><circle cx="52.4" cy="33.2" r="1.9"/><circle cx="59.8" cy="27.9" r="1.9"/><circle cx="67.6" cy="23.3" r="1.9"/><circle cx="75.8" cy="19.3" r="1.9"/><circle cx="84.3" cy="16.0" r="1.9"/><circle cx="93.0" cy="13.4" r="1.9"/><circle cx="101.9" cy="11.5" r="1.9"/><circle cx="110.9" cy="10.4" r="1.9"/><circle cx="120.0" cy="10.0" r="1.9"/><circle cx="129.1" cy="10.4" r="1.9"/><circle cx="138.1" cy="11.5" r="1.9"/><circle cx="147.0" cy="13.4" r="1.9"/><circle cx="155.7" cy="16.0" r="1.9"/><circle cx="164.2" cy="19.3" r="1.9"/><circle cx="172.4" cy="23.3" r="1.9"/><circle cx="180.2" cy="27.9" r="1.9"/><circle cx="187.6" cy="33.2" r="1.9"/><circle cx="194.5" cy="39.1" r="1.9"/><circle cx="200.9" cy="45.5" r="1.9"/><circle cx="206.8" cy="52.4" r="1.9"/><circle cx="212.1" cy="59.8" r="1.9"/><circle cx="216.7" cy="67.6" r="1.9"/><circle cx="220.7" cy="75.8" r="1.9"/><circle cx="224.0" cy="84.3" r="1.9"/><circle cx="226.6" cy="93.0" r="1.9"/><circle cx="228.5" cy="101.9" r="1.9"/><circle cx="229.6" cy="110.9" r="1.9"/></g><circle cx="120" cy="120" r="102" fill="none" stroke="#7d5e11" stroke-width="1"/><circle cx="120" cy="120" r="99" fill="none" stroke="#efd98a" stroke-width="0.7"/><g stroke="#9c7619" stroke-width="0.85" opacity="0.5"><line x1="188.0" y1="120.0" x2="216.0" y2="120.0"/><line x1="187.9" y1="123.2" x2="215.9" y2="124.6"/><line x1="187.7" y1="126.5" x2="215.6" y2="129.1"/><line x1="187.3" y1="129.7" x2="215.0" y2="133.7"/><line x1="186.8" y1="132.9" x2="214.3" y2="138.2"/><line x1="186.1" y1="136.0" x2="213.3" y2="142.6"/><line x1="185.2" y1="139.2" x2="212.1" y2="147.0"/><line x1="184.3" y1="142.2" x2="210.7" y2="151.4"/><line x1="183.1" y1="145.3" x2="209.1" y2="155.7"/><line x1="181.9" y1="148.2" x2="207.3" y2="159.9"/><line x1="180.4" y1="151.2" x2="205.3" y2="164.0"/><line x1="178.9" y1="154.0" x2="203.1" y2="168.0"/><line x1="177.2" y1="156.8" x2="200.8" y2="171.9"/><line x1="175.4" y1="159.4" x2="198.2" y2="175.7"/><line x1="173.5" y1="162.0" x2="195.5" y2="179.3"/><line x1="171.4" y1="164.5" x2="192.6" y2="182.9"/><line x1="169.2" y1="166.9" x2="189.5" y2="186.2"/><line x1="166.9" y1="169.2" x2="186.2" y2="189.5"/><line x1="164.5" y1="171.4" x2="182.9" y2="192.6"/><line x1="162.0" y1="173.5" x2="179.3" y2="195.5"/><line x1="159.4" y1="175.4" x2="175.7" y2="198.2"/><line x1="156.8" y1="177.2" x2="171.9" y2="200.8"/><line x1="154.0" y1="178.9" x2="168.0" y2="203.1"/><line x1="151.2" y1="180.4" x2="164.0" y2="205.3"/><line x1="148.2" y1="181.9" x2="159.9" y2="207.3"/><line x1="145.3" y1="183.1" x2="155.7" y2="209.1"/><line x1="142.2" y1="184.3" x2="151.4" y2="210.7"/><line x1="139.2" y1="185.2" x2="147.0" y2="212.1"/><line x1="136.0" y1="186.1" x2="142.6" y2="213.3"/><line x1="132.9" y1="186.8" x2="138.2" y2="214.3"/><line x1="129.7" y1="187.3" x2="133.7" y2="215.0"/><line x1="126.5" y1="187.7" x2="129.1" y2="215.6"/><line x1="123.2" y1="187.9" x2="124.6" y2="215.9"/><line x1="120.0" y1="188.0" x2="120.0" y2="216.0"/><line x1="116.8" y1="187.9" x2="115.4" y2="215.9"/><line x1="113.5" y1="187.7" x2="110.9" y2="215.6"/><line x1="110.3" y1="187.3" x2="106.3" y2="215.0"/><line x1="107.1" y1="186.8" x2="101.8" y2="214.3"/><line x1="104.0" y1="186.1" x2="97.4" y2="213.3"/><line x1="100.8" y1="185.2" x2="93.0" y2="212.1"/><line x1="97.8" y1="184.3" x2="88.6" y2="210.7"/><line x1="94.7" y1="183.1" x2="84.3" y2="209.1"/><line x1="91.8" y1="181.9" x2="80.1" y2="207.3"/><line x1="88.8" y1="180.4" x2="76.0" y2="205.3"/><line x1="86.0" y1="178.9" x2="72.0" y2="203.1"/><line x1="83.2" y1="177.2" x2="68.1" y2="200.8"/><line x1="80.6" y1="175.4" x2="64.3" y2="198.2"/><line x1="78.0" y1="173.5" x2="60.7" y2="195.5"/><line x1="75.5" y1="171.4" x2="57.1" y2="192.6"/><line x1="73.1" y1="169.2" x2="53.8" y2="189.5"/><line x1="70.8" y1="166.9" x2="50.5" y2="186.2"/><line x1="68.6" y1="164.5" x2="47.4" y2="182.9"/><line x1="66.5" y1="162.0" x2="44.5" y2="179.3"/><line x1="64.6" y1="159.4" x2="41.8" y2="175.7"/><line x1="62.8" y1="156.8" x2="39.2" y2="171.9"/><line x1="61.1" y1="154.0" x2="36.9" y2="168.0"/><line x1="59.6" y1="151.2" x2="34.7" y2="164.0"/><line x1="58.1" y1="148.2" x2="32.7" y2="159.9"/><line x1="56.9" y1="145.3" x2="30.9" y2="155.7"/><line x1="55.7" y1="142.2" x2="29.3" y2="151.4"/><line x1="54.8" y1="139.2" x2="27.9" y2="147.0"/><line x1="53.9" y1="136.0" x2="26.7" y2="142.6"/><line x1="53.2" y1="132.9" x2="25.7" y2="138.2"/><line x1="52.7" y1="129.7" x2="25.0" y2="133.7"/><line x1="52.3" y1="126.5" x2="24.4" y2="129.1"/><line x1="52.1" y1="123.2" x2="24.1" y2="124.6"/><line x1="52.0" y1="120.0" x2="24.0" y2="120.0"/><line x1="52.1" y1="116.8" x2="24.1" y2="115.4"/><line x1="52.3" y1="113.5" x2="24.4" y2="110.9"/><line x1="52.7" y1="110.3" x2="25.0" y2="106.3"/><line x1="53.2" y1="107.1" x2="25.7" y2="101.8"/><line x1="53.9" y1="104.0" x2="26.7" y2="97.4"/><line x1="54.8" y1="100.8" x2="27.9" y2="93.0"/><line x1="55.7" y1="97.8" x2="29.3" y2="88.6"/><line x1="56.9" y1="94.7" x2="30.9" y2="84.3"/><line x1="58.1" y1="91.8" x2="32.7" y2="80.1"/><line x1="59.6" y1="88.8" x2="34.7" y2="76.0"/><line x1="61.1" y1="86.0" x2="36.9" y2="72.0"/><line x1="62.8" y1="83.2" x2="39.2" y2="68.1"/><line x1="64.6" y1="80.6" x2="41.8" y2="64.3"/><line x1="66.5" y1="78.0" x2="44.5" y2="60.7"/><line x1="68.6" y1="75.5" x2="47.4" y2="57.1"/><line x1="70.8" y1="73.1" x2="50.5" y2="53.8"/><line x1="73.1" y1="70.8" x2="53.8" y2="50.5"/><line x1="75.5" y1="68.6" x2="57.1" y2="47.4"/><line x1="78.0" y1="66.5" x2="60.7" y2="44.5"/><line x1="80.6" y1="64.6" x2="64.3" y2="41.8"/><line x1="83.2" y1="62.8" x2="68.1" y2="39.2"/><line x1="86.0" y1="61.1" x2="72.0" y2="36.9"/><line x1="88.8" y1="59.6" x2="76.0" y2="34.7"/><line x1="91.8" y1="58.1" x2="80.1" y2="32.7"/><line x1="94.7" y1="56.9" x2="84.3" y2="30.9"/><line x1="97.8" y1="55.7" x2="88.6" y2="29.3"/><line x1="100.8" y1="54.8" x2="93.0" y2="27.9"/><line x1="104.0" y1="53.9" x2="97.4" y2="26.7"/><line x1="107.1" y1="53.2" x2="101.8" y2="25.7"/><line x1="110.3" y1="52.7" x2="106.3" y2="25.0"/><line x1="113.5" y1="52.3" x2="110.9" y2="24.4"/><line x1="116.8" y1="52.1" x2="115.4" y2="24.1"/><line x1="120.0" y1="52.0" x2="120.0" y2="24.0"/><line x1="123.2" y1="52.1" x2="124.6" y2="24.1"/><line x1="126.5" y1="52.3" x2="129.1" y2="24.4"/><line x1="129.7" y1="52.7" x2="133.7" y2="25.0"/><line x1="132.9" y1="53.2" x2="138.2" y2="25.7"/><line x1="136.0" y1="53.9" x2="142.6" y2="26.7"/><line x1="139.2" y1="54.8" x2="147.0" y2="27.9"/><line x1="142.2" y1="55.7" x2="151.4" y2="29.3"/><line x1="145.3" y1="56.9" x2="155.7" y2="30.9"/><line x1="148.2" y1="58.1" x2="159.9" y2="32.7"/><line x1="151.2" y1="59.6" x2="164.0" y2="34.7"/><line x1="154.0" y1="61.1" x2="168.0" y2="36.9"/><line x1="156.8" y1="62.8" x2="171.9" y2="39.2"/><line x1="159.4" y1="64.6" x2="175.7" y2="41.8"/><line x1="162.0" y1="66.5" x2="179.3" y2="44.5"/><line x1="164.5" y1="68.6" x2="182.9" y2="47.4"/><line x1="166.9" y1="70.8" x2="186.2" y2="50.5"/><line x1="169.2" y1="73.1" x2="189.5" y2="53.8"/><line x1="171.4" y1="75.5" x2="192.6" y2="57.1"/><line x1="173.5" y1="78.0" x2="195.5" y2="60.7"/><line x1="175.4" y1="80.6" x2="198.2" y2="64.3"/><line x1="177.2" y1="83.2" x2="200.8" y2="68.1"/><line x1="178.9" y1="86.0" x2="203.1" y2="72.0"/><line x1="180.4" y1="88.8" x2="205.3" y2="76.0"/><line x1="181.9" y1="91.8" x2="207.3" y2="80.1"/><line x1="183.1" y1="94.7" x2="209.1" y2="84.3"/><line x1="184.3" y1="97.8" x2="210.7" y2="88.6"/><line x1="185.2" y1="100.8" x2="212.1" y2="93.0"/><line x1="186.1" y1="104.0" x2="213.3" y2="97.4"/><line x1="186.8" y1="107.1" x2="214.3" y2="101.8"/><line x1="187.3" y1="110.3" x2="215.0" y2="106.3"/><line x1="187.7" y1="113.5" x2="215.6" y2="110.9"/><line x1="187.9" y1="116.8" x2="215.9" y2="115.4"/></g><circle cx="120" cy="120" r="66" fill="url(#aisInnerDisc)" stroke="#b8901f" stroke-width="1.4"/><circle cx="120" cy="120" r="62" fill="none" stroke="#c49a2e" stroke-width="0.5"/><circle cx="120" cy="120" r="116" fill="url(#aisSheen)"/></svg>
                 <div class="seal-inner">
-                  <div class="seal-brand">AIS Windows</div>
+                  <div class="seal-brand"></div>
                   <div class="seal-hr"></div>
                   <div class="seal-year" id="cert_sealYear">FY27–28</div>
                   <div class="seal-hr"></div>
-                  <div class="seal-tag">Authorized<br>Partner</div>
+                  <div class="seal-tag"></div>
                 </div>
               </div>
               <div class="seal-line right"></div>
@@ -560,7 +602,7 @@
                 <img id="qr-img" alt="WhatsApp Verification QR Code">
               </div>
               <div class="qr-label">Verify Authenticity</div>
-              <div class="qr-sub">Scan with WhatsApp</div>
+              <div class="qr-sub" id="qr_sub">Scan to visit official page</div>
             </div>
 
             <div class="issued-area">
@@ -609,66 +651,83 @@
     ══════════════════════════════════════════════════════════════ */
     import QRCode from 'https://esm.sh/qrcode@1.5.3';
 
-    /* Configuration */
-    const QR_PHONE   = '919599949991';          // without + prefix for wa.me
-    const QR_SIZE_PX = 400;                      // internal resolution — renders sharp at 26mm
+    /* ── Configuration ───────────────────────────────────────── */
+    const QR_PHONE    = '919599949991';                 // WhatsApp number (no + prefix for wa.me)
+    const QR_SIZE_PX  = 600;                             // internal resolution — stays sharp at 26mm
+    const DEFAULT_URL = 'https://www.aiswindows.com/';   // fallback when the URL box is empty
 
     let _qrDebounceTimer = null;
 
-    /**
-     * Builds the fully encoded WhatsApp URL.
-     * @param {string} partnerName  Raw (unescaped) partner name.
-     * @returns {string}            wa.me URL with percent-encoded message.
-     */
+    /** Build the WhatsApp "verify with a human" deep link. */
     function buildWhatsAppURL(partnerName) {
       const name    = (partnerName || 'this showroom').trim();
-      const message = `I'm at the showroom ${name} and I want to authenticate if it's a genuine partner.`;
+      const message = `I'm at the showroom ${name} and I want to authenticate if it's a genuine AIS Windows partner.`;
       return `https://wa.me/${QR_PHONE}?text=${encodeURIComponent(message)}`;
     }
 
     /**
-     * Regenerates the QR code image.
-     * Called on every partner-name change (debounced 300 ms so we
-     * don't hammer the library while the user is mid-typing).
-     *
-     * @param {string} partnerName  Current value from the input field.
+     * Normalise whatever is pasted into the Verification URL box:
+     *   • full http(s) link            → use as-is
+     *   • bare "lat, long" coordinates → Google Maps location link
+     *   • a domain without a scheme    → prepend https://
+     *   • empty                        → fall back to DEFAULT_URL
      */
-    function refreshQR(partnerName) {
-      clearTimeout(_qrDebounceTimer);
-      _qrDebounceTimer = setTimeout(() => _doRefreshQR(partnerName), 300);
+    function normaliseUrl(raw) {
+      const v = (raw || '').trim();
+      if (!v) return DEFAULT_URL;
+      if (/^https?:\/\//i.test(v)) return v;
+      if (/^-?\d{1,3}(\.\d+)?\s*,\s*-?\d{1,3}(\.\d+)?$/.test(v)) {
+        return `https://www.google.com/maps?q=${encodeURIComponent(v.replace(/\s+/g, ''))}`;
+      }
+      return `https://${v}`;
     }
 
-    function _doRefreshQR(partnerName) {
-      const url       = buildWhatsAppURL(partnerName);
+    /** Resolve the final string the QR encodes, based on the chosen mode. */
+    function resolveQRTarget() {
+      const mode = document.getElementById('inp_qrMode').value;
+      if (mode === 'whatsapp') {
+        const partnerName = document.getElementById('inp_partnerName').value.trim();
+        return { mode, url: buildWhatsAppURL(partnerName) };
+      }
+      return { mode: 'web', url: normaliseUrl(document.getElementById('inp_verifyUrl').value) };
+    }
+
+    /** Debounced QR refresh (300 ms) so we don't re-render on every keystroke / paste. */
+    function refreshQR() {
+      clearTimeout(_qrDebounceTimer);
+      _qrDebounceTimer = setTimeout(_doRefreshQR, 300);
+    }
+
+    function _doRefreshQR() {
+      const { mode, url } = resolveQRTarget();
       const img       = document.getElementById('qr-img');
       const container = document.getElementById('qrContainer');
       const dot       = document.getElementById('qrStatusDot');
       const statusTxt = document.getElementById('qrStatusText');
 
-      // Show loading state
       container.classList.add('qr-loading');
       dot.className = 'qr-status-dot loading';
       statusTxt.textContent = 'Generating…';
 
       QRCode.toDataURL(url, {
-        width:          QR_SIZE_PX,
-        margin:         1,            // quiet-zone: 1 module = cleaner look inside the gold border
-        errorCorrectionLevel: 'H',   // highest reliability for printed/photographed QR
-        color: {
-          dark:  '#000000',           // standard black modules
-          light: '#ffffff',           // white background
-        },
+        width:                QR_SIZE_PX,
+        margin:               1,
+        errorCorrectionLevel: 'M',   // balanced density — stays scannable for longer website URLs
+        color: { dark: '#0a0a0a', light: '#ffffff' },
       })
       .then(dataUrl => {
-        img.src    = dataUrl;
+        img.src = dataUrl;
+        img.alt = mode === 'whatsapp' ? 'WhatsApp verification QR code' : 'Website verification QR code';
         container.classList.remove('qr-loading');
-        dot.className   = 'qr-status-dot ready';
-        statusTxt.textContent = 'QR ready — partner-specific';
+        dot.className = 'qr-status-dot ready';
+        statusTxt.textContent = mode === 'whatsapp'
+          ? 'QR ready — WhatsApp verification'
+          : 'QR ready — website / location';
       })
       .catch(err => {
         console.error('[QR] generation failed:', err);
         container.classList.remove('qr-loading');
-        dot.className   = 'qr-status-dot error';
+        dot.className = 'qr-status-dot error';
         statusTxt.textContent = 'QR generation failed';
       });
     }
@@ -721,9 +780,26 @@
       if (regionEl)  regionEl.textContent  = region;
       if (previewEl) previewEl.textContent = region;
 
-      // ── Regenerate QR with current partner name ──────────────
-      const partnerName = document.getElementById('inp_partnerName').value.trim();
-      refreshQR(partnerName);
+      // ── Sync QR-related UI, then regenerate the QR ───────────
+      syncQRMode();
+      refreshQR();
+    }
+
+    /** Show/hide the URL box and update the on-certificate caption to match the mode. */
+    function syncQRMode() {
+      const mode     = document.getElementById('inp_qrMode').value;
+      const urlField = document.getElementById('urlField');
+      const qrSub    = document.getElementById('qr_sub');
+      const hint     = document.getElementById('qrHint');
+      const isWeb    = mode !== 'whatsapp';
+
+      if (urlField) urlField.style.display = isWeb ? '' : 'none';
+      if (qrSub) qrSub.textContent = isWeb ? 'Scan to visit official page' : 'Scan to verify on WhatsApp';
+      if (hint) {
+        hint.innerHTML = isWeb
+          ? 'Paste the partner&#39;s live page on <strong style="color:#c49a2e">aiswindows.com</strong> (or a Google&nbsp;Maps location link). The QR regenerates instantly each time the URL changes.'
+          : 'The QR opens a WhatsApp chat with the company official (<strong style="color:#c49a2e">919599949991</strong>) carrying the partner&#39;s name, so the scanner can confirm authenticity directly.';
+      }
     }
 
     // Bind all text inputs
@@ -735,6 +811,10 @@
     // Bind region fields
     document.getElementById('inp_zone').addEventListener('change', updateCertificate);
     document.getElementById('inp_state').addEventListener('input', updateCertificate);
+
+    // Bind verification-QR controls (mode switch + pasted URL → live QR refresh)
+    document.getElementById('inp_qrMode').addEventListener('change', updateCertificate);
+    document.getElementById('inp_verifyUrl').addEventListener('input', updateCertificate);
 
     // Initial render — sync fields AND generate first QR immediately
     updateCertificate();
